@@ -1,0 +1,64 @@
+# For this project, I downloaded Spotify data from Kaggle.
+#Then I established a table structure to house the Spotify dataset.
+#Finally, I conducted data analysis using SQL.
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+#Then I inserted the Spotify Data .csv into the table.
+
+#Next, I explored the data using the following SQL. 
+
+#First I determined the artist with the highest average track popularity.
+SELECT artist_name, avg (popularity)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY avg(popularity)desc
+LIMIT 1;
+
+#Then I found the top 10 tracks with the longest duration and their respective artists and durations (in both minutes and seconds).
+SELECT artist_name, track_name, SUM(duration_ms) AS song_duration
+    duration_ms / 60000 AS minutes, 
+    (duration_ms % 60000) / 1000 AS seconds 
+FROM BIT_DB.Spotifydata 
+GROUP BY track_name
+ORDER BY song_duration DESC 
+LIMIT 10;
+
+#Next I found the artist with the most tracks in the data set.
+SELECT artist_name, count(track_name)AS total_tracks
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY count(track_name)desc
+LIMIT 1;
+
+#Then I determined all tracks with a danceability greater than .8 and energy greater than .8
+SELECT artist_name, track_name, danceability, energy
+FROM BIT_DB.Spotifydata
+WHERE danceability >=.8 
+AND energy >=.8
+ORDER BY danceability desc;
+
+#Lastly, I listed all tracks by the artist Lil Nas X
+SELECT track_name, artist_name 
+FROM BIT_DB.Spotifydata 
+WHERE artist_name = 'Lil Nas X';
